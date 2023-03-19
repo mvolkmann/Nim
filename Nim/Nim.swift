@@ -60,10 +60,13 @@ struct Nim: View {
     }
 
     private func score(_ rows: [Int]) -> Int {
-        let sortedRows = rows.sorted()
-        if sortedRows == [1, 1, 1] { return 0 } // winning
-        if sortedRows == [0, 1, 1] { return 1 } // not winning
-        if sortedRows == [0, 0, 1] { return 0 } // winning
+        // We are in the end game if all rows are empty or contain one.
+        let isEndGame = rows.allSatisfy { count in count <= 1 }
+        if isEndGame {
+            let total = rows.reduce(0, +)
+            // Score is 1 for an even total and 0 for an odd total.
+            return total % 2 == 0 ? 1 : 0
+        }
         return rows.reduce(0) { acc, count in acc ^ count }
     }
 
