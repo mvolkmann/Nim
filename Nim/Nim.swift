@@ -4,6 +4,7 @@ struct Nim: View {
     private let tabSize = 40.0
 
     @State private var computerWon = false
+    @State private var gameStarted = false
     @State private var rows = [7, 5, 3]
 
     private var gameOver: Bool {
@@ -47,8 +48,15 @@ struct Nim: View {
     }
 
     private func removeTabs(row: Int, count: Int, byHuman: Bool = false) {
+        gameStarted = true
         rows[row] -= count
         if gameOver { computerWon = byHuman }
+    }
+
+    private func resetGame() {
+        gameStarted = false
+        computerWon = false
+        rows = [7, 5, 3]
     }
 
     private func score(_ rows: [Int]) -> Int {
@@ -61,8 +69,6 @@ struct Nim: View {
 
     var body: some View {
         VStack {
-            Button("Computer Goes First") { makeMove() }
-
             ForEach(Array(rows.enumerated()), id: \.offset) { index, count in
                 if index > 0 {
                     Divider().overlay(.black)
@@ -93,12 +99,16 @@ struct Nim: View {
                 }
             }
 
+            if !gameStarted {
+                Button("Make computer goes first.") { makeMove() }
+            }
+
             if gameOver {
-                Text("Game Over").font(.title)
                 Text((computerWon ? "The computer" : "You") + " won!")
-                    .font(.headline)
-            } else {
-                Text("Score = \(score(rows))")
+                    .font(.title)
+                Button("New Game") {
+                    resetGame()
+                }.buttonStyle(.borderedProminent)
             }
 
             Spacer()
