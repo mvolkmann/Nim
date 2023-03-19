@@ -13,6 +13,22 @@ struct Nim: View {
         rows[row] = count - 1
     }
 
+    private func score(rows: [Int]) -> Int {
+        let sortedRows = rows.sorted()
+        if sortedRows == [0, 1, 1] { return 1 } // not winning
+        if sortedRows == [1, 1, 1] { return 0 } // winning
+        if sortedRows == [0, 0, 1] { return 0 } // winning
+
+        /*
+         var result = 0
+         for row in rows {
+             result ^= row
+         }
+         return result
+         */
+        return rows.reduce(0) { acc, count in acc ^ count }
+    }
+
     var body: some View {
         VStack {
             ForEach(Array(rows.enumerated()), id: \.offset) { index, count in
@@ -40,6 +56,8 @@ struct Nim: View {
 
             if gameOver {
                 Text("Game Over!").font(.title)
+            } else {
+                Text("Score = \(score(rows: rows))")
             }
 
             Spacer()
