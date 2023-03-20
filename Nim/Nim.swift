@@ -15,9 +15,10 @@ struct Nim: View {
         // We are in the end game if all rows are empty or contain one.
         let isEndGame = rows.allSatisfy { count in count <= 1 }
         if isEndGame {
-            let total = rows.reduce(0, +)
-            return total % 2 != 0 // odd is winning
+            let sum = rows.reduce(0, +)
+            return sum % 2 != 0 // odd is winning
         }
+        // Exclusive-or all the row counts.
         let score = rows.reduce(0) { acc, count in acc ^ count }
         return score == 0
     }
