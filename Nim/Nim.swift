@@ -47,14 +47,12 @@ struct Nim: View {
             if foundMove { break }
         }
 
-        if !foundMove {
-            // Just remove one from any non-empty row.
-            for (index, count) in rows.enumerated() {
-                if count > 0 {
-                    // print("Computer is removing 1 from row \(index + 1)")
-                    removeTabs(row: index, count: 1)
-                    break
-                }
+        while !foundMove {
+            // Remove one from any non-empty row.
+            let index = Int.random(in: 0 ..< rows.count)
+            if rows[index] > 0 {
+                removeTabs(row: index, count: 1)
+                foundMove = true
             }
         }
     }
@@ -74,6 +72,7 @@ struct Nim: View {
     var body: some View {
         VStack {
             ForEach(Array(rows.enumerated()), id: \.offset) { index, count in
+                // Add a Diver before all rows except the first.
                 if index > 0 {
                     Divider().overlay(.black)
                 }
