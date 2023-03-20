@@ -11,6 +11,17 @@ struct Nim: View {
         rows.allSatisfy { count in count == 0 }
     }
 
+    private func isWinning(_ rows: [Int]) -> Bool {
+        // We are in the end game if all rows are empty or contain one.
+        let isEndGame = rows.allSatisfy { count in count <= 1 }
+        if isEndGame {
+            let total = rows.reduce(0, +)
+            return total % 2 != 0 // odd is winning
+        }
+        let score = rows.reduce(0) { acc, count in acc ^ count }
+        return score == 0
+    }
+
     private func makeMove() {
         guard !gameOver else { return }
 
@@ -24,7 +35,7 @@ struct Nim: View {
             for count in options {
                 var board = rows
                 board[index] -= count
-                if score(board) == 0 {
+                if isWinning(board) {
                     // print("Computer is removing \(count) from row \(index + 1)")
                     removeTabs(row: index, count: count)
                     foundMove = true
@@ -59,17 +70,6 @@ struct Nim: View {
         rows = [7, 5, 3]
     }
 
-    private func score(_ rows: [Int]) -> Int {
-        // We are in the end game if all rows are empty or contain one.
-        let isEndGame = rows.allSatisfy { count in count <= 1 }
-        if isEndGame {
-            let total = rows.reduce(0, +)
-            // Score is 1 for an even total and 0 for an odd total.
-            return total % 2 == 0 ? 1 : 0
-        }
-        return rows.reduce(0) { acc, count in acc ^ count }
-    }
-
     var body: some View {
         VStack {
             ForEach(Array(rows.enumerated()), id: \.offset) { index, count in
@@ -89,6 +89,7 @@ struct Nim: View {
                                         count: rows[index] - n + 1,
                                         byHuman: true
                                     )
+                                    // TODO: Add delay to simulate computer thinking?
                                     makeMove()
                                 },
                                 label: {
