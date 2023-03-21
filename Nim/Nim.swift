@@ -34,10 +34,9 @@ struct Nim: View {
 
             let options = Array(1 ... count)
             for count in options {
-                var board = rows
+                var board = rows // makes a copy
                 board[index] -= count
                 if isWinning(board) {
-                    // print("Computer is removing \(count) from row \(index + 1)")
                     removeTabs(row: index, count: count)
                     foundMove = true
                     break
